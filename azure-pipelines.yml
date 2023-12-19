@@ -1,0 +1,34 @@
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+jobs:
+- job: TerraformJob
+  displayName: 'Terraform Job'
+
+  steps:
+  - task: TerraformInstaller@1
+    inputs:
+      terraformVersion: 'v1.6.6'
+      
+  - task: TerraformTaskV4@4
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      backendServiceArm: 'Lab-Devops(1)(dcf69c6b-dd23-4d9a-a724-8484ab9fd7da)'
+      backendAzureRmResourceGroupName: 'rg-terraform-devops'
+      backendAzureRmStorageAccountName: 'terraformdevops2023'
+      backendAzureRmContainerName: 'terraform'
+      backendAzureRmKey: 'Hsy7Ic2aBbeGFu2gFkkK96ofphIrhC+X2UKh0kQO1OjxyrhFqlEPKd8jGEcK9naOgSyGU4u4gOgb+AStvMmHFw=='
+  - task: TerraformTaskV4@4
+    inputs:
+      provider: 'azurerm'
+      command: 'plan'
+      environmentServiceNameAzureRM: 'Lab-Devops(dcf69c6b-dd23-4d9a-a724-8484ab9fd7da)'
+  - task: TerraformTaskV4@4
+    inputs:
+      provider: 'azurerm'
+      command: 'apply'
+      environmentServiceNameAzureRM: 'Lab-Devops(dcf69c6b-dd23-4d9a-a724-8484ab9fd7da)'

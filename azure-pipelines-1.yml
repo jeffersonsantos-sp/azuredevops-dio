@@ -1,0 +1,32 @@
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: TerraformInstaller@1
+  inputs:
+    terraformVersion: 'v1.6.6'
+
+- task: TerraformTaskV4@4
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    backendServiceArm: 'Lab-Devops(1)(dcf69c6b-dd23-4d9a-a724-8484ab9fd7da)'
+    backendAzureRmResourceGroupName: 'rg-terraform-devops'
+    backendAzureRmStorageAccountName: 'terraformdevops2023'
+    backendAzureRmContainerName: 'terraform'
+    backendAzureRmKey: '$(System.DefaultWorkingDirectory)'
+
+- task: TerraformTaskV4@4
+  inputs:
+    provider: 'azurerm'
+    command: 'validate'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(System.DefaultWorkingDirectory)'
+    ArtifactName: 'terraform'
+    publishLocation: 'Container'
+ 
